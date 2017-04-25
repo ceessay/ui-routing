@@ -1,52 +1,73 @@
 var app = angular.module('myApp', ['ui.router']);
 
-app.config(function($stateProvider, $urlRouterProvider){
- 
+app.config(function ($stateProvider, $urlRouterProvider) {
+
     $urlRouterProvider.otherwise('/');
- 
+
     $stateProvider
-    .state('home',{
-        url: '/',
-        views: {
-            'header': {
-                templateUrl: 'templates/partials/header.html'
-            },
-            'content': {
-                templateUrl: 'templates/partials/content.html' 
-            },
-            'footer': {
-                templateUrl: 'templates/partials/footer.html'
+        .state('app', {
+            url: '/',
+            views: {
+                'header': {
+                    templateUrl: '/templates/partials/header.html'
+                },
+                'content': {
+                    templateUrl: '/templates/partials/content.html'
+                },
+                'footer': {
+                    templateUrl: '/templates/partials/footer.html'
+                }
             }
-        }
-    })
- 
-    .state('dashboard', {
-        url: '/dashboard',
-        views: {
-            'header': {
-                templateUrl: 'templates/partials/header.html'
-            },
-            'content': {
-                templateUrl: 'templates/dashboard.html',
-                controller: 'DashboardController'
+        })
+
+        .state('app.dashboard', {
+            url: 'dashboard',
+            views: {
+                'content@': {
+                    templateUrl: 'templates/dashboard.html',
+                    controller: 'DashboardController'
+                }
             }
-        }
- 
-    })
- 
-    .state('campaigns', {
-        url: '/campaigns',
-        views: {
-            'content': {
-                templateUrl: 'templates/campaigns.html',
-                controller: 'CampaignController'
-            },
-            'footer': {
-                templateUrl: 'templates/partials/footer.html'
+
+        })
+
+        .state('app.campaigns', {
+            url: 'campaigns',
+            views: {
+                'content@': {
+                    templateUrl: 'templates/campaigns.html',
+                    controller: 'CampaignController'
+                }
             }
-        }
- 
-    })
+
+        })
+
+        .state('app.shows', {
+            url: 'shows',
+            views: {
+                'content@': {
+                    templateUrl: 'templates/shows.html',
+                    controller: 'ShowsController'
+                }
+            }
+
+        })
+        .state('app.shows.detail', {
+            url: '/:id',
+            /*
+            templateUrl: 'templates/partials/subscriber-detail.html',
+            controller: 'SubscriberDetailController'
+            */
+
+            views: {
+                'detail@app.shows': {
+                    templateUrl: 'templates/partials/show-detail.html',
+                    controller: 'ShowsDetailController'
+                }
+            }
+
+        });
+
 });
 
 app.controller('DashboardController', ['$scope', function ($scope) {
@@ -60,41 +81,41 @@ app.controller('CampaignController', ['$scope', function ($scope) {
 
 
 
-// app.controller('ShowsController', ['$scope', 'ShowsService', function ($scope, ShowsService) {
-//     $scope.shows = ShowsService.list();
-// }]);
-// 
-// 
-// app.controller('ShowsDetailController', ['$scope', '$stateParams', 'ShowsService', function ($scope, $stateParams, ShowsService) {
-//     $scope.selectedShow = ShowsService.find($stateParams.id);
-// }]);
-
-// app.factory('ShowsService', function () {
-//     var shows = [{
-//         id: 1,
-//         name: 'Walking Dead',
-//         description: 'The Walking Dead is an American post-apocalyptic horror drama television series developed by Frank Darabont. It is based on the comic book series of the same name by Robert Kirkman, Tony Moore, and Charlie Adlard. It stars Andrew Lincoln as sheriff\'s deputy Rick Grimes, who awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies.'
-//     },
-    
-//     {
-//         id: 2,
-//         name: 'Breaking Bad',
-//         description: 'Breaking Bad is an American crime drama television series created and produced by Vince Gilligan. The show originally aired on the AMC network for five seasons, from January 20, 2008 to September 29, 2013. The main character is Walter White (Bryan Cranston), a struggling high school chemistry teacher who is diagnosed with inoperable lung cancer at the beginning of the series.'
-//     },
-
-//     {
-//         id: 3,
-//         name: '7D',
-//         description: 'The 7D is an American animated television series produced by Disney Television Animation, and broadcast on Disney XD starting in July 7, 2014. It is a re-imagining of the titular characters from the 1937 film Snow White and the Seven Dwarfs by Walt Disney Productions'
-//     }];
+app.controller('ShowsController', ['$scope', 'ShowsService', function ($scope, ShowsService) {
+    $scope.shows = ShowsService.list();
+}]);
 
 
-//     return {
-//         list: function () {
-//             return shows;
-//         },
-//         find: function (id) {
-//             return _.find(shows, function (show) { return show.id == id });
-//         }
-//     }
-// });
+app.controller('ShowsDetailController', ['$scope', '$stateParams', 'ShowsService', function ($scope, $stateParams, ShowsService) {
+    $scope.selectedShow = ShowsService.find($stateParams.id);
+}]);
+
+app.factory('ShowsService', function () {
+    var shows = [{
+        id: 1,
+        name: 'Walking Dead',
+        description: 'The Walking Dead is an American post-apocalyptic horror drama television series developed by Frank Darabont. It is based on the comic book series of the same name by Robert Kirkman, Tony Moore, and Charlie Adlard. It stars Andrew Lincoln as sheriff\'s deputy Rick Grimes, who awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies.'
+    },
+
+    {
+        id: 2,
+        name: 'Breaking Bad',
+        description: 'Breaking Bad is an American crime drama television series created and produced by Vince Gilligan. The show originally aired on the AMC network for five seasons, from January 20, 2008 to September 29, 2013. The main character is Walter White (Bryan Cranston), a struggling high school chemistry teacher who is diagnosed with inoperable lung cancer at the beginning of the series.'
+    },
+
+    {
+        id: 3,
+        name: '7D',
+        description: 'The 7D is an American animated television series produced by Disney Television Animation, and broadcast on Disney XD starting in July 7, 2014. It is a re-imagining of the titular characters from the 1937 film Snow White and the Seven Dwarfs by Walt Disney Productions'
+    }];
+
+
+    return {
+        list: function () {
+            return shows;
+        },
+        find: function (id) {
+            return _.find(shows, function (show) { return show.id == id });
+        }
+    }
+});
